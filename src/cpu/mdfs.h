@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <limits>
 #include <memory>
+#include <iostream>
 
 #ifdef _OPENMP
 #include <omp.h>
@@ -51,7 +52,7 @@ void scalarMDFS(
     }
 
     const size_t n_classes = mdfs_info.divisions + 1;
-    const size_t num_of_cubes = std::pow(n_classes, n_dimensions);
+    const size_t num_of_cubes = std::pow(n_classes, n_dimensions); //
     const size_t num_of_cubes_reduced = std::pow(n_classes, n_dimensions - 1);
 
     const auto d2 = n_classes*n_classes;
@@ -137,6 +138,7 @@ void scalarMDFS(
         }
         #endif
 
+        // std::cout << " going to discretization" << "\n";
         for (size_t discretization_id = 0; discretization_id < mdfs_info.discretizations; discretization_id++) {
             #ifdef _OPENMP
             #pragma omp barrier
@@ -278,6 +280,7 @@ void scalarMDFS(
                     }
                 }
 
+                // std::cout << "reached till process_tuple" << "\n";
                 process_tuple<n_decision_classes, n_dimensions, stat_mode>(
                     data,
                     decision,

@@ -53,7 +53,7 @@ public:
     void skip();
 };
 
-
+// QUEST Why used template function to manipulate the class here?
 template<uint8_t n_dimensions> TupleGenerator<n_dimensions>::TupleGenerator(size_t n_variables)
         : n_variables(n_variables) {}
 

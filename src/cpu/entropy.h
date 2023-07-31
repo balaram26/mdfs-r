@@ -3,6 +3,8 @@
 
 #include <cstddef>
 #include <cmath>
+#include <cstdint>
+
 
 
 // only 2 decision classes are supported
