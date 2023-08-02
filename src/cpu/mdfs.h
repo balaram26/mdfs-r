@@ -6,6 +6,7 @@
 #include "common.h"
 #include "dataset.h"
 #include "discretize.h"
+#include "PrintUtility.h"
 
 #include <algorithm>
 #include <limits>
@@ -112,6 +113,8 @@ void scalarMDFS(
         float igs[n_dimensions];
         float* counters = new float[n_decision_classes * num_of_cubes];
         float* reduced = new float[n_decision_classes * num_of_cubes_reduced];
+        printArray(counters, n_decision_classes * num_of_cubes);
+        std::cout << "started empty\n";
 
         TupleGenerator<n_dimensions> generator(
                 mdfs_info.interesting_vars_count && mdfs_info.require_all_vars ?
@@ -212,6 +215,7 @@ void scalarMDFS(
                     }
                 }
             }
+            printArray(counters, n_decision_classes * num_of_cubes);
 
             #ifdef _OPENMP
             #pragma omp barrier
@@ -280,6 +284,9 @@ void scalarMDFS(
                     }
                 }
 
+                print("next");
+
+                printArray(counters, n_decision_classes * num_of_cubes);
                 // std::cout << "reached till process_tuple" << "\n";
                 process_tuple<n_decision_classes, n_dimensions, stat_mode>(
                     data,
@@ -295,7 +302,7 @@ void scalarMDFS(
                     H_Y,
                     H,
                     igs);
-
+                // printArray(counters, n_decision_classes * num_of_cubes);
                 switch (out.type) {
                     case MDFSOutputType::MaxIGs:
                         #ifdef _OPENMP

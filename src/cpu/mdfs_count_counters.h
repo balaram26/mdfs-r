@@ -4,7 +4,8 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
-
+#include <iostream>
+#include "PrintUtility.h"
 
 // only 1 and 2 decision classes are supported
 template <uint8_t n_decision_classes, uint8_t n_dimensions, bool with_contrast>
@@ -25,13 +26,13 @@ inline void count_counters(
     const size_t* d
 ) {
     std::memset(counters, 0, sizeof(float) * n_cubes * n_decision_classes);
-
     for (size_t o = 0; o < n_objects; ++o) {
         size_t bucket = 0;
         if (n_dimensions >= 1) {
             bucket += data[tuple[0] * n_objects + o];
         }
         if (n_dimensions >= 2) {
+            printValue(n_classes * data[tuple[1] * n_objects + o]);
             bucket += n_classes * data[tuple[1] * n_objects + o];
         }
         if (n_dimensions >= 3) {
@@ -60,6 +61,8 @@ inline void count_counters(
             counters[bucket] += 1.0f;
         }
     }
+    // std::cout << " going to discretization " << counters << "\n";
+
 
     for (size_t c = 0; c < n_cubes; ++c) {
         counters[c] += p[0];
@@ -67,6 +70,8 @@ inline void count_counters(
             counters[n_cubes + c] += p[1];
         }
     }
+    printArray(counters, n_classes * n_cubes);
+    // std::cout << " going to discretization " << counters << "\n";
 }
 
 #endif
