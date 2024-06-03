@@ -6,10 +6,12 @@
 #include "common.h"
 #include "dataset.h"
 #include "discretize.h"
+#include "PrintUtility.h"
 
 #include <algorithm>
 #include <limits>
 #include <memory>
+#include <iostream>
 
 #ifdef _OPENMP
 #include <omp.h>
@@ -51,7 +53,7 @@ void scalarMDFS(
     }
 
     const size_t n_classes = mdfs_info.divisions + 1;
-    const size_t num_of_cubes = std::pow(n_classes, n_dimensions);
+    const size_t num_of_cubes = std::pow(n_classes, n_dimensions); //
     const size_t num_of_cubes_reduced = std::pow(n_classes, n_dimensions - 1);
 
     const auto d2 = n_classes*n_classes;
@@ -111,6 +113,8 @@ void scalarMDFS(
         float igs[n_dimensions];
         float* counters = new float[n_decision_classes * num_of_cubes];
         float* reduced = new float[n_decision_classes * num_of_cubes_reduced];
+        printArray(counters, n_decision_classes * num_of_cubes);
+        std::cout << "started empty\n";
 
         TupleGenerator<n_dimensions> generator(
                 mdfs_info.interesting_vars_count && mdfs_info.require_all_vars ?
@@ -137,6 +141,7 @@ void scalarMDFS(
         }
         #endif
 
+        // std::cout << " going to discretization" << "\n";
         for (size_t discretization_id = 0; discretization_id < mdfs_info.discretizations; discretization_id++) {
             #ifdef _OPENMP
             #pragma omp barrier
@@ -210,6 +215,7 @@ void scalarMDFS(
                     }
                 }
             }
+            printArray(counters, n_decision_classes * num_of_cubes);
 
             #ifdef _OPENMP
             #pragma omp barrier
@@ -278,6 +284,10 @@ void scalarMDFS(
                     }
                 }
 
+                print("next");
+
+                printArray(counters, n_decision_classes * num_of_cubes);
+                // std::cout << "reached till process_tuple" << "\n";
                 process_tuple<n_decision_classes, n_dimensions, stat_mode>(
                     data,
                     decision,
@@ -292,7 +302,7 @@ void scalarMDFS(
                     H_Y,
                     H,
                     igs);
-
+                // printArray(counters, n_decision_classes * num_of_cubes);
                 switch (out.type) {
                     case MDFSOutputType::MaxIGs:
                         #ifdef _OPENMP

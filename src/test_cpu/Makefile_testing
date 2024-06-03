@@ -1,0 +1,37 @@
+# Compiler and compiler flags
+CC := g++
+CFLAGS := -Wall -Wextra -std=c++11
+
+# # Makefile variables
+# CC = g++
+# CFLAGS = -Wall -std=c++11
+
+# List of source files with .cpp extension
+CPP_SRC = $(wildcard ../cpu/*.cpp)
+
+# List of header-only files with .h extension
+HEADER_ONLY_SRC = $(wildcard ../cpu/*.h)
+
+# Create object file names from the source file names
+OBJS = $(CPP_SRC:.cpp=.o) $(HEADER_ONLY_SRC:.h=.o)
+
+TARGET = my_program
+
+# Rules
+all: $(TARGET)
+
+# Rule to build the executable
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS)
+
+
+# Rule for building .o files from .cpp files
+%.o: %.cpp
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Rule for building .o files from header-only .h files
+%.o: %.h
+	touch $@
+
+clean:
+	rm -f $(OBJS) $(TARGET)
